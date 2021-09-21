@@ -1,0 +1,9 @@
+select concat(mems.firstname,' ',mems.surname) as member,
+facs.name from cd.members mems
+inner join cd.bookings bks
+on mems.memid=bks.memid
+inner join cd.facilities facs
+on facs.facid=bks.facid
+where facs.name like 'Tennis%'
+group by facs.name,mems.firstname,mems.surname
+order by member,facs.name;
