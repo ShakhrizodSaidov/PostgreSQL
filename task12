@@ -1,0 +1,20 @@
+insert into cd.facilities
+    (facid, name, membercost, guestcost, initialoutlay, monthlymaintenance)
+    values( (select max(facid) from cd.facilities)+1, 'Spa', 20, 30, 100000, 800);
+
+update cd.facilities
+set initialoutlay=10000
+where facid=1;
+
+update cd.facilities 
+set membercost=6,
+	guestcost=30
+where facid in(1,0)
+
+update cd.facilities
+set 
+	membercost=(select membercost*1.1 from cd.facilities where facid=0),
+	guestcost=(select guestcost*1.1 from cd.facilities where facid=0)
+where facid=1;
+
+delete  from cd.bookings;

@@ -1,0 +1,4 @@
+select bks.starttime as start, fac.name as name from  cd.facilities fac
+inner join cd.bookings bks
+on bks.facid=fac.facid
+where fac.name like 'Tennis%' and bks.starttime between '2012-09-21' and '2012-09-22';
