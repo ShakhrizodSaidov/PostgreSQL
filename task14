@@ -1,0 +1,26 @@
+with t1 as (select facid, sum(slots) as totalslots    
+		from cd.bookings    
+		group by facid
+ 		order by facid) 
+select * from t1
+where totalslots=(select max(t1.totalslots) from t1)	;
+
+DROP TABLE IF EXISTS sales;
+CREATE TABLE sales (
+    brand VARCHAR NOT NULL,
+    segment VARCHAR NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY (brand, segment)
+);
+
+INSERT INTO sales (brand, segment, quantity)
+VALUES
+    ('ABC', 'Premium', 100),
+    ('ABC', 'Basic', 200),
+    ('XYZ', 'Premium', 100),
+    ('XYZ', 'Basic', 300);
+    
+    select bks.facid, extract(month from bks.starttime)as month,sum(slots) from cd.bookings bks
+where bks.starttime between '2012-01-01' and '2013-01-01'
+group by rollup(facid, month)
+order by bks.facid,month;
