@@ -1,0 +1,19 @@
+select  facid, sum(slots) from cd.bookings
+where starttime between '2012-09-1'and '2012-10-01'
+group by facid
+order by sum
+
+select facid,extract(month from starttime)as month, sum(slots) as "Total Slots" from cd.bookings
+where extract(year from starttime)=2012
+group by facid,month
+order by facid,month;
+
+select facs.name, sum(slots * case
+			when memid = 0 then facs.guestcost
+			else facs.membercost
+		end) as revenue
+		from cd.bookings bks
+	inner join cd.facilities facs
+on bks.facid=facs.facid
+group by facs.name
+order by revenue asc;
