@@ -1,0 +1,6 @@
+select facs.facid,facs.name,ROUND(sum(bks.slots)/2::numeric ,2) as totalhours 
+from cd.bookings bks
+inner join cd.facilities facs
+on facs.facid = bks.facid
+group by facs.facid, facs.name
+order by facs.facid;          
