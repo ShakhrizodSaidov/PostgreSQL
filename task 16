@@ -1,0 +1,21 @@
+select  mems.surname,mems.firstname, mems.memid,min(bks.starttime) as starttime
+from cd.bookings bks
+inner join cd.members mems
+on bks.memid=mems.memid
+where bks.starttime>='2012-09-01 00:00:00'
+group by mems.surname,mems.firstname, mems.memid
+order by mems.memid;
+
+select (select count(*) from cd.members) as count,firstname,surname from cd.members
+group by surname,firstname,joindate
+order by joindate
+
+select row_number() over(), firstname,surname from cd.members
+order by joindate
+
+with t1 as(select rank() over(order by sum(slots) desc),facid, sum(slots) as summ 
+		   from cd.bookings bks
+		   group by facid
+		   order by summ desc)
+		  select facid, summ from t1 where rank=1
+		   
