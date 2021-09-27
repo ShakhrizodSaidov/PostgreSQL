@@ -1,0 +1,40 @@
+select mems.firstname,mems.surname, ((sum(bks.slots)+10)/20)*10 as hours, rank()over(order by ((sum(bks.slots)+10)/20)*10 desc) from cd.members mems
+inner join cd.bookings as bks
+on bks.memid=mems.memid
+group by mems.memid
+order by rank, surname, firstname; 
+
+select facs.name, sum(case when memid=0 then 
+	facs.guestcost*bks.slots
+	else facs.membercost*bks.slots end)  as revenue,
+	rank()over(order by sum(case when memid=0 then 
+	facs.guestcost*bks.slots
+	else facs.membercost*bks.slots end) desc)
+	from cd.facilities facs
+join cd.bookings bks
+on bks.facid=facs.facid
+group by facs.name
+order by revenue desc
+offset 0 rows
+limit 3 
+
+with t1 as(
+select facs.name, sum(case when memid=0 then 
+	facs.guestcost*bks.slots
+	else facs.membercost*bks.slots end)  as revenue,
+	rank()over(order by sum(case when memid=0 then 
+	facs.guestcost*bks.slots
+	else facs.membercost*bks.slots end) desc)
+	from cd.facilities facs
+join cd.bookings bks
+on bks.facid=facs.facid
+group by facs.name
+order by revenue desc)
+select t1.name,
+(case when t1.revenue>(select avg(revenue)from t1) then 'high'
+	when t1.revenue=(select avg(revenue)from t1) then 'average'
+	else 'low'
+	end ) as flag
+from t1
+group by t1.name,t1.revenue
+order by  flag
